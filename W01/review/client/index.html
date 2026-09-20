@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Tic-Tac-Toe</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header>
+      <h1>Tic-Tac-Toe</h1>
+    </header>
+
+    <nav aria-label="Main navigation">
+      <a href="index.html">Home</a>
+      <a href="saved.html">Saved Games</a>
+      <a href="rules.html">Rules</a>
+    </nav>
+
+    <main>
+      <section id="board" class="board" aria-label="Tic-Tac-Toe board"></section>
+
+      <p class="status">Player X's turn</p>
+      <button id="restart" type="button">Play Again</button>
+      <button id="save" type="button">Save Game</button>
+    </main>
+
+    <script>
+      let board = ['', '', '', '', '', '', '', '', ''];
+      let currentPlayer = 'X';
+      let gameLocked = false;
+
+      const boardElement = document.querySelector('#board');
+      const resetButton = document.querySelector('#restart');
+      const saveButton = document.querySelector('#save');
+      const statusElement = document.querySelector('.status');
+
+      function cellTemplate(item, index) {
+        return `<button class="cell" type="button" data-index="${index}" data-value="${item}">${item}</button>`;
+      }
+
+      function boardTemplate(boardData, container = false) {
+        const cells = boardData.map(cellTemplate).join('');
+        return container ? `<section class="board">${cells}</section>` : cells;
+      }
+
+      function renderBoard(winningCombo = [], winner = null) {
+        boardElement.innerHTML = boardTemplate(board);
+
+        const cells = boardElement.querySelectorAll('.cell');
+        cells.forEach((cell) => {
+          const index = Number(cell.dataset.index);
+
+          cell.classList.toggle('winning-x', winner === 'X' && winningCombo.includes(index));
+          cell.classList.toggle('winning-o', winner === 'O' && winningCombo.includes(index));
+        });
+      }
+
+      function displayResults(winner) {
+        if (winner === 'Draw') {
+          statusElement.textContent = "It's a draw!";
+          statusElement.style.color = 'var(--draw)';
+          return;
+        }
+
+        if (winner) {
+          statusElement.textContent = `Player ${winner} wins!`;
+          statusElement.style.color = winner === 'X' ? 'var(--x)' : 'var(--o)';
+          return;
+        }
+
+        statusElement.textContent = `Player ${currentPlayer}'s turn`;
+        statusElement.style.color = currentPlayer === 'X' ? 'var(--x)' : 'var(--o)';
+      }
+
+      function boardClickedHandler(event) {
+        const cell = event.target;
+
+        if (!cell.matches('.cell') || gameLocked) {
+          return;
+        }
+
+        const cellIndex = Number(cell.dataset.index);
+
+        if (board[cellIndex]) {
+          return;
+        }
+
+        board[cellIndex] = currentPlayer;
+
+        const result = checkWin();
+        const winningCombo = result ? result.combo : [];
+        const winner = result ? result.winner : null;
+
+        gameLocked = Boolean(result);
+        renderBoard(winningCombo, winner);
+
+        if (result && result.winner !== 'Draw') {
+          displayResults(result.winner);
+          return;
+        }
+
+        if (result && result.winner === 'Draw') {
+          displayResults('Draw');
+          return;
+        }
+
+        currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
+        displayResults(null);
+      }
+
+      function resetHandler() {
+        board = ['', '', '', '', '', '', '', '', ''];
+        currentPlayer = 'X';
+        gameLocked = false;
+        renderBoard();
+        displayResults(null);
+      }
+
+      function checkWin() {
+        const winConditions = [
+          [0, 1, 2],
+          [3, 4, 5],
+          [6, 7, 8],
+          [0, 3, 6],
+          [1, 4, 7],
+          [2, 5, 8],
+          [0, 4, 8],
+          [2, 4, 6]
+        ];
+
+        for (const condition of winConditions) {
+          const [a, b, c] = condition;
+
+          if (board[a] && board[a] === board[b] && board[a] === board[c]) {
+            return {
+              winner: board[a],
+              combo: condition
+            };
+          }
+        }
+
+        if (!board.includes('')) {
+          return {
+            winner: 'Draw',
+            combo: []
+          };
+        }
+
+        return null;
+      }
+
+      async function saveHandler() {
+        const response = await fetch('http://localhost:3000/boards', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(board)
+        });
+
+        if (response.ok) {
+          window.location.href = 'saved.html';
+        }
+      }
+
+      boardElement.addEventListener('click', boardClickedHandler);
+      resetButton.addEventListener('click', resetHandler);
+      saveButton.addEventListener('click', saveHandler);
+
+      renderBoard();
+      displayResults(null);
+    </script>
+  </body>
+</html>

@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Saved Games</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header>
+      <h1>Saved Games</h1>
+    </header>
+
+    <nav aria-label="Main navigation">
+      <a href="index.html">Home</a>
+      <a href="saved.html">Saved Games</a>
+      <a href="rules.html">Rules</a>
+    </nav>
+
+    <main class="saved-page">
+      <section class="saved-list" aria-label="Saved games list"></section>
+    </main>
+
+    <script>
+      const savedList = document.querySelector('.saved-list');
+
+      function boardTemplate(boardData, container = false) {
+        const cells = boardData
+          .map((item, index) => `<button class="cell" type="button" data-index="${index}" data-value="${item}">${item}</button>`)
+          .join('');
+
+        return container ? `<section class="board">${cells}</section>` : cells;
+      }
+
+      async function renderSavedGames() {
+        const response = await fetch('http://localhost:3000/boards');
+
+        if (!response.ok) {
+          savedList.textContent = 'No saved games yet.';
+          return;
+        }
+
+        const savedGames = await response.json();
+
+        if (!savedGames.length) {
+          savedList.textContent = 'No saved games yet.';
+          return;
+        }
+
+        savedList.innerHTML = savedGames
+          .map((game) => `<article class="saved-item">${boardTemplate(game, true)}</article>`)
+          .join('');
+      }
+
+      renderSavedGames();
+    </script>
+  </body>
+</html>

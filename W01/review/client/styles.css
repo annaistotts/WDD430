@@ -1,0 +1,191 @@
+:root {
+  --cell-size: 3rem;
+  --page-bg: #f3f5f7;
+  --card-bg: #f8fbff;
+  --border: #dfeafc;
+  --ink: #1f2937;
+  --nav: #183b7a;
+  --x: #dc2626;
+  --o: #2563eb;
+  --draw: #7c3aed;
+  --hover: #dbeafe;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-size: 1.2em;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+  max-width: 600px;
+  margin: auto;
+  padding: 1rem;
+  color: var(--ink);
+  background: var(--page-bg);
+}
+
+header,
+nav,
+main {
+  max-width: 600px;
+}
+
+button {
+  padding: 0.75rem 1rem;
+  margin: 0.5em;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  font-weight: 700;
+}
+
+nav {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+nav a {
+  color: var(--nav);
+  text-decoration: none;
+  font-weight: 600;
+  padding: 0.5rem 0.75rem;
+  border-radius: 999px;
+  transition: background-color 0.2s ease;
+}
+
+nav a:hover {
+  background: var(--hover);
+}
+
+main {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  padding: 1.5rem;
+  box-shadow: 0 10px 24px rgba(37, 99, 235, 0.08);
+}
+
+.saved-page {
+  display: grid;
+  gap: 1.25rem;
+}
+
+.saved-list {
+  display: grid;
+  gap: 1rem;
+}
+
+.saved-item {
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 0.75rem;
+}
+
+.rules-page {
+  line-height: 1.6;
+  background: transparent;
+}
+
+.rules-list {
+  padding-left: 1.5rem;
+}
+
+.rules-page a {
+  color: var(--red-700);
+  font-weight: 600;
+}
+
+#board,
+.history .board,
+.saved-list .board {
+  display: grid;
+  grid-template-columns: repeat(3, var(--cell-size));
+  grid-template-rows: repeat(3, var(--cell-size));
+  text-align: center;
+  margin: 1rem auto;
+  width: fit-content;
+}
+
+#board .cell,
+.history .cell,
+.saved-list .cell {
+  background-color: transparent;
+  border: 0;
+  border-radius: 0;
+  padding: 0;
+  margin: 0;
+  font-size: 2.5rem;
+  width: var(--cell-size);
+  height: var(--cell-size);
+  color: var(--nav);
+  transition: transform 0.15s ease, color 0.15s ease, background-color 0.15s ease;
+}
+
+#board .cell[data-value="X"],
+.history .cell[data-value="X"],
+.saved-list .cell[data-value="X"] {
+  color: var(--x);
+}
+
+#board .cell[data-value="O"],
+.history .cell[data-value="O"],
+.saved-list .cell[data-value="O"] {
+  color: var(--o);
+}
+
+#board .cell.winning-x,
+.history .cell.winning-x,
+.saved-list .cell.winning-x {
+  box-shadow: 0 0 0 4px rgba(220, 38, 38, 0.18), 0 0 18px rgba(220, 38, 38, 0.8);
+  background-color: transparent;
+  border-radius: 8px;
+}
+
+#board .cell.winning-o,
+.history .cell.winning-o,
+.saved-list .cell.winning-o {
+  box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.18), 0 0 18px rgba(37, 99, 235, 0.8);
+  background-color: transparent;
+  border-radius: 8px;
+}
+
+#board > .cell:nth-child(3n + 2),
+.history .board > .cell:nth-child(3n + 2),
+.saved-list .board > .cell:nth-child(3n + 2) {
+  border-left: 1px solid var(--nav);
+  border-right: 1px solid var(--nav);
+}
+
+#board > .cell:nth-child(n + 4):nth-child(-n + 6),
+.history .board > .cell:nth-child(n + 4):nth-child(-n + 6),
+.saved-list .board > .cell:nth-child(n + 4):nth-child(-n + 6) {
+  border-top: 1px solid var(--nav);
+  border-bottom: 1px solid var(--nav);
+}
+
+.status {
+  color: var(--nav);
+  font-weight: 700;
+  text-align: center;
+  margin-top: 1.25rem;
+}
+
+#restart {
+  display: block;
+  margin: 0.75rem auto 0;
+  background: linear-gradient(135deg, var(--o), var(--x));
+  color: white;
+}
+
+#save {
+  display: block;
+  margin: 0.75rem auto 0;
+  background: var(--nav);
+  color: white;
+}
+
+

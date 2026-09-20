@@ -1,0 +1,18 @@
+# Node / Express
+node_modules/
+.env
+npm-debug.log*
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Editor settings
+.vscode/
+
+# Logs
+logs/
+*.log
+
+# Optional: local generated files
+coverage/
